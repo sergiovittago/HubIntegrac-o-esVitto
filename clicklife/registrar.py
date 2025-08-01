@@ -9,14 +9,17 @@ def registrar_usuario_clicklife():
         cpf = data.get("cpf")
         nome = data.get("nome")
         email = data.get("email")
+        senha = data.get("senha")
+        datanascimento = data.get("datanascimento")
+        sexo = data.get("sexo")
         telefone = data.get("telefone")
 
-        print(f"📥 [ClickLife] Dados recebidos: CPF={cpf} | Nome={nome} | Email={email} | Tel={telefone}")
+        print(f"📥 [ClickLife] Dados recebidos: CPF={cpf} | Nome={nome} | Email={email}")
 
-        if not cpf or not nome:
-            print("❌ [ClickLife] CPF ou Nome ausente.")
-            enviar_log_slack("❌ [ClickLife] CPF ou nome ausente no payload.", sucesso=False)
-            return make_response("CPF e nome são obrigatórios", 400)
+        if not cpf or not nome or not email:
+            print("❌ [ClickLife] CPF, Nome ou Email ausente.")
+            enviar_log_slack("❌ [ClickLife] CPF, Nome ou Email ausente no payload.", sucesso=False)
+            return make_response("CPF, Nome e Email são obrigatórios", 400)
 
         url_criar = "https://api.clicklifesaude.com/usuarios"
         payload_criar = {
@@ -24,8 +27,19 @@ def registrar_usuario_clicklife():
             "nome": nome,
             "cpf": cpf,
             "email": email,
+            "senha": senha,
+            "datanascimento": datanascimento,
+            "sexo": sexo,
             "telefone": telefone,
-            "empresaid": CLICK_EMPRESA_ID
+            "logradouro": "Antonio Raposo",
+            "numero": "186",
+            "complemento": "Sala 14",
+            "bairro": "Lapa",
+            "cep": "05074020",
+            "cidade": "Sao Paulo",
+            "estado": "SP",
+            "empresaid": int(CLICK_EMPRESA_ID),
+            "planoid": int(CLICK_PLANO_ID)
         }
         print(f"🚀 [ClickLife] Enviando criação: {payload_criar}")
         r1 = requests.post(url_criar, json=payload_criar)
